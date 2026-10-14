@@ -7,7 +7,7 @@
 <script src="vendor/live2dcubismcore.min.js"></script>
 <script src="../node_modules/pixi-live2d-display/dist/cubism4.min.js"></script>
 </head><body>
-<div id="stage"></div>
+<div id="stage"><img id="photo" class="hidden" alt="自定义形象"></div>
 <div id="bubble" class="hidden"></div>
 <div id="quickbar" class="hidden">
   <button id="btn-chat">💬 聊天</button>
@@ -20,7 +20,14 @@
   <input id="chat-input" placeholder="和它聊点什么… Enter 发送">
 </div>
 <div id="settings-panel" class="panel hidden">
-  <label>模型路径（相对项目根目录）<input id="set-model" /></label>
+  <label>形象
+    <select id="set-avatar-type">
+      <option value="live2d">Live2D 模型（眼球/头部实时跟随）</option>
+      <option value="image">上传图片（照片模式：3D 倾斜 + 浮动）</option>
+    </select>
+  </label>
+  <div class="row"><button id="btn-upload" type="button">🖼 上传图片…</button><span id="upload-result" class="hint"></span></div>
+  <label>模型路径（相对项目根目录，仅 Live2D 模式用）<input id="set-model" /></label>
   <label>Chat Base URL<input id="set-base" /></label>
   <label>API Key<input id="set-key" type="password" /></label>
   <label>模型名<input id="set-modelname" /></label>
@@ -29,5 +36,30 @@
   <p class="hint">保存后重启生效。Key 只存在本地 config.json，不要提交到 git。</p>
 </div>
 <div id="tray-hint" class="hidden">已隐藏 — 在任务栏点窗口图标恢复（或重启应用）</div>
+<div id="wizard" class="hidden">
+  <div class="wiz-card">
+    <h2>👋 初次设置</h2>
+    <div class="wiz-step" id="wiz-1">
+      <h3>1/2 · 接入 AI</h3>
+      <label>Chat Base URL<input id="wiz-base" placeholder="https://api.openai.com/v1"></label>
+      <label>API Key<input id="wiz-key" type="password" placeholder="sk-…"></label>
+      <label>模型名<input id="wiz-model" placeholder="gpt-4o-mini"></label>
+      <label>人设（system prompt）<textarea id="wiz-prompt" rows="2"></textarea></label>
+      <div class="row"><button id="wiz-test" type="button">测试连接</button><span id="wiz-test-result" class="hint"></span></div>
+      <p class="hint">支持任何 OpenAI 兼容接口（DeepSeek、硅基流动等）。Key 只存本机。</p>
+      <button id="wiz-next" type="button">下一步 →</button>
+    </div>
+    <div class="wiz-step hidden" id="wiz-2">
+      <h3>2/2 · 选择形象</h3>
+      <div class="row">
+        <button id="wiz-use-live2d" type="button">🎭 Live2D 默认形象</button>
+        <button id="wiz-upload" type="button">🖼 上传图片…</button>
+      </div>
+      <img id="wiz-preview" class="hidden" alt="预览">
+      <p class="hint">上传单张图片会进入「照片模式」：图片随鼠标轻微 3D 倾斜 + 呼吸浮动。真正的眼球/头部转动需要 Live2D 模型（分层 + 骨骼），单张平面图做不到。</p>
+      <div class="row"><button id="wiz-back" type="button">← 上一步</button><button id="wiz-done" type="button">完成</button></div>
+    </div>
+  </div>
+</div>
 <script src="renderer.js"></script>
 </body></html>

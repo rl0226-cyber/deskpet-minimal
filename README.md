@@ -19,8 +19,9 @@ exe 版的配置存在 `%APPDATA%\DeskPet\config.json`（安装版/免安装版�
 
 - **实时跟随**：主进程每 33ms 轮询全局鼠标，渲染层用 `ParamEyeBallX/Y + ParamAngleX/Y + ParamBodyAngleX` + 12% 插值平滑
 - **悬停菜单**：鼠标移到桌宠上出快捷栏（聊天 / 设置 / 隐藏 / 退出），离开 800ms 自动收起
-- **自定义形象**：换 `config.json` 里的 `modelPath`，指向任意 `.model3.json`（需 Cubism 标准参数名）
-- **AI API 自接**：设置面板填任意 OpenAI 兼容的 Base URL / Key / 模型名 + 人设，Key 只存本地 `config.json`
+- **首次启动向导**：第一次打开自动弹出两步设置——①填 API（Base URL / Key / 模型名 / 人设，带"测试连接"按钮）②选形象（Live2D 默认或上传图片），全程不用碰配置文件
+- **自定义形象**：设置面板可随时切换 —— Live2D 模型（换 `modelPath` 指向任意 `.model3.json`，需 Cubism 标准参数名）或上传单张图片（照片模式：图片随鼠标 3D 倾斜 + 呼吸浮动）
+- **AI API 自接**：设置面板填任意 OpenAI 兼容的 Base URL / Key / 模型名 + 人设，Key 只存本地
 
 > 本项目是源码运行版（`npm start` 直接跑），不是打包好的安装包（没有 .exe / .dmg / .AppImage）。想打包成安装包需要另加 `electron-builder`，当前版本没做。
 

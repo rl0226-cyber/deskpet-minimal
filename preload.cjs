@@ -8,4 +8,6 @@ contextBridge.exposeInMainWorld('pet', {
   drag: (dx, dy) => ipcRenderer.send('window:drag', { dx, dy }),
   hide: () => ipcRenderer.send('window:hide'),
   quit: () => ipcRenderer.send('window:quit'),
+  pickAvatar: () => ipcRenderer.invoke('avatar:pick'),
+  testChat: (chatCfg) => ipcRenderer.invoke('chat:test', chatCfg),
 });

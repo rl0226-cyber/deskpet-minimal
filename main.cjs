@@ -1,19 +1,25 @@
 'use strict';
 // Minimal main process: small transparent window + global cursor polling + config + chat proxy.
 // No bundler, no store class: config is one JSON file in the project folder.
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, dialog } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
+const { pathToFileURL } = require('node:url');
 
 const ROOT = __dirname;
 // 打包后 asar 只读：配置改存用户数据目录（%APPDATA%/DeskPet）；开发时仍用项目目录的 config.json
 const CONFIG_PATH = app.isPackaged
   ? path.join(app.getPath('userData'), 'config.json')
   : path.join(ROOT, 'config.json');
+// 用户上传的形象图片统一存这里（开发/打包通用），配置里只记文件名
+const AVATAR_DIR = path.join(app.getPath('userData'), 'avatars');
 const DEFAULT_CONFIG = {
+  setupDone: false,
+  avatar: { type: 'live2d', file: '' },
   modelPath: 'models/haru/haru_greeter_t03.model3.json',
   chat: { baseUrl: 'https://api.openai.com/v1', apiKey: '', model: 'gpt-4o-mini', systemPrompt: 'You are a small desktop companion. Reply briefly, in the user\'s language.' },
 };
+const avatarUrl = (file) => (file ? pathToFileURL(path.join(AVATAR_DIR, file)).href : null);
 
 function loadConfig() {
   try { return { ...DEFAULT_CONFIG, ...JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8')) }; }
@@ -70,10 +76,10 @@ async function runSelftest() {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('config:get', () => config);
-  ipcMain.handle('config:save', (_e, next) => { config = { ...config, ...next }; saveConfig(config); return config; });
-  ipcMain.handle('chat', async (_e, messages) => {
-    const { baseUrl, apiKey, model, systemPrompt } = config.chat;
+  ipcMain.handle('config:get', () => ({ ...config, avatarUrl: avatarUrl(config.avatar && config.avatar.file) }));
+  ipcMain.handle('config:save', (_e, next) => { config = { ...config, ...next }; saveConfig(config); return { ...config, avatarUrl: avatarUrl(config.avatar && config.avatar.file) }; });
+  async function doChat(messages, chatCfg) {
+    const { baseUrl, apiKey, model, systemPrompt } = chatCfg;
     const res = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}) },
@@ -82,6 +88,24 @@ app.whenReady().then(() => {
     if (!res.ok) throw new Error(`Chat API ${res.status}: ${await res.text().then((t) => t.slice(0, 200))}`);
     const data = await res.json();
     return data.choices?.[0]?.message?.content || '(empty reply)';
+  }
+  ipcMain.handle('chat', async (_e, messages) => doChat(messages, config.chat));
+  // 向导里的"测试连接"：用用户刚填、还没保存的配置发一条最小请求
+  ipcMain.handle('chat:test', async (_e, chatCfg) => { await doChat([{ role: 'user', content: 'ping' }], chatCfg); return 'ok'; });
+  // 选形象图片：弹系统文件框 -> 拷到 avatars/ -> 切到照片模式
+  ipcMain.handle('avatar:pick', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+      title: '选择形象图片',
+      filters: [{ name: '图片', extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif'] }],
+      properties: ['openFile'],
+    });
+    if (canceled || !filePaths[0]) return null;
+    fs.mkdirSync(AVATAR_DIR, { recursive: true });
+    const file = `avatar${path.extname(filePaths[0]).toLowerCase() || '.png'}`;
+    fs.copyFileSync(filePaths[0], path.join(AVATAR_DIR, file));
+    config.avatar = { type: 'image', file };
+    saveConfig(config);
+    return { file, url: avatarUrl(file) };
   });
   ipcMain.on('window:drag', (_e, { dx, dy }) => { if (win) win.setPosition(win.getPosition()[0] + dx, win.getPosition()[1] + dy); });
   ipcMain.on('window:hide', () => win?.hide());
