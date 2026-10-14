@@ -6,7 +6,10 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const ROOT = __dirname;
-const CONFIG_PATH = path.join(ROOT, 'config.json');
+// 打包后 asar 只读：配置改存用户数据目录（%APPDATA%/DeskPet）；开发时仍用项目目录的 config.json
+const CONFIG_PATH = app.isPackaged
+  ? path.join(app.getPath('userData'), 'config.json')
+  : path.join(ROOT, 'config.json');
 const DEFAULT_CONFIG = {
   modelPath: 'models/haru/haru_greeter_t03.model3.json',
   chat: { baseUrl: 'https://api.openai.com/v1', apiKey: '', model: 'gpt-4o-mini', systemPrompt: 'You are a small desktop companion. Reply briefly, in the user\'s language.' },

@@ -2,6 +2,21 @@
 
 最小版 Live2D 桌宠：自己写的全部代码，只依赖公开库，不抄任何现有桌宠项目的应用代码。
 
+## 下载即用（Windows，不用碰代码）
+
+去 [Releases](https://github.com/rl0226-cyber/deskpet-minimal/releases) 页面下载最新版：
+
+- `DeskPet-Setup-*.exe`：安装版，一路下一步
+- `DeskPet-*-portable.exe`：免安装版，双击即用
+
+跑起来后：桌面上弹出 420×700 透明小窗，里面是测试模型 Haru；眼睛和头跟着鼠标转；悬停出菜单；拖动可移动。
+
+exe 版的配置存在 `%APPDATA%\DeskPet\config.json`（安装版/免安装版通用）；API Key 在应用内的设置面板里填就行，不用手动改文件。
+
+> 以下源码运行方式是给开发者看的，直接用 exe 的话跳过。
+
+---
+
 - **实时跟随**：主进程每 33ms 轮询全局鼠标，渲染层用 `ParamEyeBallX/Y + ParamAngleX/Y + ParamBodyAngleX` + 12% 插值平滑
 - **悬停菜单**：鼠标移到桌宠上出快捷栏（聊天 / 设置 / 隐藏 / 退出），离开 800ms 自动收起
 - **自定义形象**：换 `config.json` 里的 `modelPath`，指向任意 `.model3.json`（需 Cubism 标准参数名）
