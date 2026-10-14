@@ -1,0 +1,9 @@
+{
+  "modelPath": "models/haru/haru_greeter_t03.model3.json",
+  "chat": {
+    "baseUrl": "https://api.openai.com/v1",
+    "apiKey": "",
+    "model": "gpt-4o-mini",
+    "systemPrompt": "You are a small desktop companion. Reply briefly, in the user's language."
+  }
+}

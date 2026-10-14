@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>DeskPet Minimal</title>
+<link rel="stylesheet" href="styles.css">
+<!-- pixi + live2d come from installed deps, no bundler -->
+<script src="../node_modules/pixi.js/dist/browser/pixi.min.js"></script>
+<script src="vendor/live2dcubismcore.min.js"></script>
+<script src="../node_modules/pixi-live2d-display/dist/cubism4.min.js"></script>
+</head><body>
+<div id="stage"></div>
+<div id="bubble" class="hidden"></div>
+<div id="quickbar" class="hidden">
+  <button id="btn-chat">💬 聊天</button>
+  <button id="btn-settings">⚙️ 设置</button>
+  <button id="btn-hide">👁 隐藏</button>
+  <button id="btn-quit">✖ 退出</button>
+</div>
+<div id="chat-panel" class="panel hidden">
+  <div id="chat-log"></div>
+  <input id="chat-input" placeholder="和它聊点什么… Enter 发送">
+</div>
+<div id="settings-panel" class="panel hidden">
+  <label>模型路径（相对项目根目录）<input id="set-model" /></label>
+  <label>Chat Base URL<input id="set-base" /></label>
+  <label>API Key<input id="set-key" type="password" /></label>
+  <label>模型名<input id="set-modelname" /></label>
+  <label>人设（system prompt）<textarea id="set-prompt" rows="3"></textarea></label>
+  <button id="btn-save">保存</button>
+  <p class="hint">保存后重启生效。Key 只存在本地 config.json，不要提交到 git。</p>
+</div>
+<div id="tray-hint" class="hidden">已隐藏 — 在任务栏点窗口图标恢复（或重启应用）</div>
+<script src="renderer.js"></script>
+</body></html>
