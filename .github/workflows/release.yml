@@ -18,7 +18,8 @@ jobs:
           cache: npm
       - run: npm install
       - run: npm run dist
+      - run: Compress-Archive -Path dist/DeskPet-win32-x64 -DestinationPath "dist/DeskPet-${{ github.ref_name }}-win32-x64.zip"
       - uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.exe
+          files: dist/*.zip
           generate_release_notes: true

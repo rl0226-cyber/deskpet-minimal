@@ -6,8 +6,7 @@
 
 去 [Releases](https://github.com/rl0226-cyber/deskpet-minimal/releases) 页面下载最新版：
 
-- `DeskPet-Setup-*.exe`：安装版，一路下一步
-- `DeskPet-*-portable.exe`：免安装版，双击即用
+- `DeskPet-v*-win32-x64.zip`：解压后双击里面的 `DeskPet.exe` 即用（免安装）
 
 跑起来后：桌面上弹出 420×700 透明小窗，里面是测试模型 Haru；眼睛和头跟着鼠标转；悬停出菜单；拖动可移动。
 

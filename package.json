@@ -5,8 +5,8 @@
   },
   "description": "Minimal Live2D desktop pet: gaze follows cursor, hover menu, bring-your-own OpenAI-compatible API. Clean-room rewrite, no copied app code.",
   "devDependencies": {
-    "electron": "38.4.0",
-    "electron-builder": "^26.0.0"
+    "@electron/packager": "^20.3.0",
+    "electron": "38.4.0"
   },
   "main": "main.cjs",
   "name": "deskpet-minimal",
@@ -14,29 +14,7 @@
   "scripts": {
     "selftest": "electron --no-sandbox . --selftest",
     "start": "electron .",
-    "dist": "electron-builder --win"
+    "dist": "electron-packager . DeskPet --platform=win32 --arch=x64 --out=dist --overwrite --prune --ignore=github"
   },
-  "version": "0.2.0",
-  "build": {
-    "appId": "com.rl0226.deskpet",
-    "productName": "DeskPet",
-    "files": [
-      "main.cjs",
-      "preload.cjs",
-      "renderer/**/*",
-      "models/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true
-    }
-  }
+  "version": "0.2.1"
 }
