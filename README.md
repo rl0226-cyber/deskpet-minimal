@@ -79,6 +79,7 @@ npm start
 ### Windows 常见问题
 
 - `node 不是内部命令`：Node 没装好，或装完没重开 PowerShell；重开一个再试，仍不行就重装 Node（勾上 Add to PATH）
+- `npm` 报“无法加载文件 npm.ps1，因为在此系统上禁止运行脚本”：这是 PowerShell 执行策略拦了 npm 的 `.ps1` 脚本。最省事的办法：命令写成 `npm.cmd`（如 `npm.cmd install`、`npm.cmd start`），不用改任何设置；想一劳永逸就跑 `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`（只影响当前用户，不用管理员），重开 PowerShell 后直接用 `npm`
 - `npm install` 很慢 / 报错：网络问题，多试一次；或换淘宝镜像：`npm config set registry https://registry.npmmirror.com` 再 `npm install`
 - Windows Defender / 防火墙弹提示：点“允许”，Electron 是本地应用，不联网（除非你用它聊天调 API）
 - 窗口闪一下就没了：看 PowerShell 里的报错，多半是模型路径不对或 Node 版本太低；先跑 `node -v` 确认 ≥18
